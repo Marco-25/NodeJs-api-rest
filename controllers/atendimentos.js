@@ -2,7 +2,9 @@ const Atendimentos = require('../models/atendimentos');
 
 module.exports = app => {
     app.get('/atendimentos', (req, res) =>  {
-        Atendimentos.lista(res);
+        Atendimentos.lista()
+            .then(resultados => res.json(resultados))
+            .catch(erros => res.status(200).json(erros));
     });
 
     app.get('/atendimentos/:id', (req, res) =>  {
@@ -13,20 +15,25 @@ module.exports = app => {
 
     app.post('/atendimentos', (req,res) => {
         const atendimento = req.body;
-
-        Atendimentos.adiciona(atendimento, res); 
+        Atendimentos.adiciona(atendimento)
+            .then(atendimentoCadastrado => res.json(atendimentoCadastrado))
+            .catch(erros => res.status(200).json(erros));
     });
 
     app.patch('/atendimentos/:id', (req, res) =>  {
         const id = parseInt(req.params.id);
         const valores = req.body;
         
-        Atendimentos.altera(id, valores, res);
+        Atendimentos.altera(id, valores)
+            .then(() => res.json({id,valores}))
+            .catch(erros => res.status(400).json(erros));
     });
 
     app.delete('/atendimentos/:id', (req, res) =>  {
         const id = parseInt(req.params.id);
         
-        Atendimentos.deleta(id, res);
+        Atendimentos.deleta(id)
+            .then(resultados => res.json(resultados))
+            .catch(erros => res.status(400).json(erros));
     });
 }
